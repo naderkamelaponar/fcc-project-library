@@ -7,7 +7,6 @@
  */
 
 "use strict";
-const console = require("zombie/lib/console");
 const Book = require("../models/Book");
 module.exports = function (app) {
   app
