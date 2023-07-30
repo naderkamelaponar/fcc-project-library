@@ -27,10 +27,9 @@ module.exports = function (app) {
       console.log(books);
       res.status(200).json(books);
     })
-
     .post(async function (req, res) {
       let title = req.body.title;
-      console.log("title",title)
+      console.log("title", title);
       if (!title) return res.send("missing required field title");
       const body = {
         title: title,
@@ -44,20 +43,24 @@ module.exports = function (app) {
       //response will contain new book object including atleast _id and title
     })
 
-    .delete(async function  (req, res) {
+    .delete(async function (req, res) {
       //if successful response will be 'complete delete successful'
       try {
-         await Book.deleteMany({})  
+        await Book.deleteMany({});
       } catch (error) {
-        return res.send("no book exists")
+        return res.send("no book exists");
       }
-      return res.send("delete successful")
+      return res.send("delete successful");
     });
 
   app
     .route("/api/books/:id")
     .get(async function (req, res) {
       let bookid = req.params.id;
+      console.log(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid));
+      
+      if (!/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid))
+        return res.send("no book exists");
       let book = await Book.findOne({ _id: bookid });
       if (!book) return res.send("no book exists");
       book = {
@@ -67,13 +70,17 @@ module.exports = function (app) {
       };
       res.status(200).json(book);
     })
-
+    //= #id 
     .post(async function (req, res) {
       let bookid = req.params.id;
       let comment = req.body.comment;
+      console.log(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid));
+      
+      if (!/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid))
+        return res.send("no book exists");
       if (!comment) return res.send("missing required field title");
       try {
-        let cc = await Book.findOne({ _id: bookid });
+        let cc = await Book.findById({ _id: bookid });
         if (!cc) return res.send("no book exists");
         cc = cc["comments"].length;
         let newComment = await Book.findByIdAndUpdate(
