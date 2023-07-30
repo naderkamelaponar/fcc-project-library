@@ -15,15 +15,27 @@ module.exports = function (app) {
       //response will be array of book objects
       //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
       let books = await Book.find({});
-      console.log(books);
-      books = books.map((a) => {
-        return {
-          _id: a["_id"],
-          title: a["title"],
-          commentcount: a["commentcount"],
-          comments: a["comments"],
-        };
-      });
+      if (!books) {
+        books = await Book.create({ title: "The Noble Qura'an" });
+        books = [
+          {
+            _id: books["_id"],
+            title: books["title"],
+            commentcount: books["commentcount"],
+            comments: books["comments"],
+          },
+        ];
+      } else {
+        books = books.map((a) => {
+          return {
+            _id: a["_id"],
+            title: a["title"],
+            commentcount: a["commentcount"],
+            comments: a["comments"],
+          };
+        });
+      }
+
       console.log(books);
       res.status(200).json(books);
     })
