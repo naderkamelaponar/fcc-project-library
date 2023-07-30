@@ -73,14 +73,15 @@ module.exports = function (app) {
     //= #id 
     .post(async function (req, res) {
       let bookid = req.params.id;
-      let comment = req.body.comment;
       console.log(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid));
-      try {
       
       if (!/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid))
         return res.send("no book exists");
-      let cc = await Book.findById({ _id: bookid });
+      let cc = await Book.findOne({ _id: bookid });
       if (!cc) return res.send("no book exists");
+      let comment = req.body.comment;
+      try {
+    
       if (!comment) return res.send("missing required field title");
       
         
