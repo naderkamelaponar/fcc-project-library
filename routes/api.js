@@ -75,13 +75,15 @@ module.exports = function (app) {
       let bookid = req.params.id;
       let comment = req.body.comment;
       console.log(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid));
+      try {
       
       if (!/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid))
         return res.send("no book exists");
+      let cc = await Book.findById({ _id: bookid });
+      if (!cc) return res.send("no book exists");
       if (!comment) return res.send("missing required field title");
-      try {
-        let cc = await Book.findById({ _id: bookid });
-        if (!cc) return res.send("no book exists");
+      
+        
         cc = cc["comments"].length;
         let newComment = await Book.findByIdAndUpdate(
           bookid,
