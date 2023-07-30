@@ -51,7 +51,6 @@ module.exports = function (app) {
       } catch (error) {
         return res.send("no book exists");
       }
-      
     });
 
   app
@@ -59,7 +58,7 @@ module.exports = function (app) {
     .get(async function (req, res) {
       let bookid = req.params.id;
       console.log(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid));
-      
+
       if (!/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid))
         return res.send("no book exists");
       let book = await Book.findOne({ _id: bookid });
@@ -71,22 +70,20 @@ module.exports = function (app) {
       };
       res.status(200).json(book);
     })
-    //= #id 
+    //= #id
     .post(async function (req, res) {
       let bookid = req.params.id;
       console.log(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid));
-      
+
       if (!/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid))
         return res.send("no book exists");
-      
+
       let comment = req.body.comment;
       if (!comment) return res.send("missing required field title");
       try {
         let cc = await Book.findOne({ _id: bookid });
-      if (!cc) return res.send("no book exists");
-      
-      
-        
+        if (!cc) return res.send("no book exists");
+
         cc = cc["comments"].length;
         let newComment = await Book.findByIdAndUpdate(
           bookid,
@@ -115,8 +112,11 @@ module.exports = function (app) {
       }
     })
 
-    .delete(function (req, res) {
+    .delete(async function (req, res) {
       let bookid = req.params.id;
+      const delBook = await Book.findByIdAndDelete(bookid);
+      if (delBook) return res.send("delete successful");
+      return res.send("no book exists");
       //if successful response will be 'delete successful'
     });
 };
