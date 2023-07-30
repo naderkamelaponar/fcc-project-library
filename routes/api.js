@@ -47,7 +47,7 @@ module.exports = function (app) {
       //if successful response will be 'complete delete successful'
       try {
         await Book.deleteMany({});
-        return res.send("delete successful");
+        return res.send("complete delete successful");
       } catch (error) {
         return res.send("no book exists");
       }
