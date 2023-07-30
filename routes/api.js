@@ -79,8 +79,7 @@ module.exports = function (app) {
         return res.send("no book exists");
 
       let comment = req.body.comment;
-      console.log("EEEEE:",comment)
-      if (!comment) return res.send("missing required field title");
+      if (!comment) return res.send("missing required field comment");
       try {
         let cc = await Book.findOne({ _id: bookid });
         if (!cc) return res.send("no book exists");
