@@ -7,6 +7,7 @@
  */
 
 "use strict";
+const console = require("zombie/lib/console");
 const Book = require("../models/Book");
 module.exports = function (app) {
   app
@@ -52,29 +53,48 @@ module.exports = function (app) {
     .get(async function (req, res) {
       let bookid = req.params.id;
       let book = await Book.findOne({ _id: bookid });
-      if (!book) return res.send("error");
+      if (!book) return res.send("no book exists");
       book = {
         _id: book["_id"],
         title: book["title"],
         comments: book["comments"],
       };
-      console.log(book);
       res.status(200).json(book);
-      //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
     })
 
     .post(async function (req, res) {
       let bookid = req.params.id;
       let comment = req.body.comment;
-      let newComment = await Book.findByIdAndUpdate(bookid, {
-        $push: {
-          comments: comment
-        },
-      },    { "new": true, "upsert": true },
-      );
-      console.log(newComment);
-      return res.json(newComment);
-      //json res format same as .get
+      if (!comment) return res.send("missing required field title");
+      try {
+        let cc = await Book.findOne({ _id: bookid });
+        if (!cc) return res.send("no book exists");
+        cc = cc["comments"].length;
+        let newComment = await Book.findByIdAndUpdate(
+          bookid,
+          {
+            $push: {
+              comments: comment,
+            },
+            $set: {
+              commentcount: cc + 1,
+            },
+          },
+          { new: true, upsert: true }
+        );
+        newComment = {
+          //{"comments":["test","423"],"_id":"64c6769b32648d0911b8be32","title":"tesyonok","commentcount":2,"__v":2}
+          comments: newComment["comments"],
+          _id: newComment["_id"],
+          title: newComment["title"],
+          commentcount: newComment["commentcount"],
+          __v: newComment["__v"],
+        };
+        return res.json(newComment);
+      } catch (error) {
+        console.log(error);
+        return "error";
+      }
     })
 
     .delete(function (req, res) {
