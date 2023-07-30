@@ -30,7 +30,8 @@ module.exports = function (app) {
 
     .post(async function (req, res) {
       let title = req.body.title;
-      if (!title) return res.status(500).send("missing required field title");
+      console.log("title",title)
+      if (!title) return res.send("missing required field title");
       const body = {
         title: title,
       };
@@ -43,8 +44,14 @@ module.exports = function (app) {
       //response will contain new book object including atleast _id and title
     })
 
-    .delete(function (req, res) {
+    .delete(async function  (req, res) {
       //if successful response will be 'complete delete successful'
+      try {
+         await Book.deleteMany({})  
+      } catch (error) {
+        return res.send("no book exists")
+      }
+      return res.send("delete successful")
     });
 
   app
