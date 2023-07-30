@@ -47,10 +47,11 @@ module.exports = function (app) {
       //if successful response will be 'complete delete successful'
       try {
         await Book.deleteMany({});
+        return res.send("delete successful");
       } catch (error) {
         return res.send("no book exists");
       }
-      return res.send("delete successful");
+      
     });
 
   app
@@ -77,12 +78,13 @@ module.exports = function (app) {
       
       if (!/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i.test(bookid))
         return res.send("no book exists");
-      let cc = await Book.findOne({ _id: bookid });
-      if (!cc) return res.send("no book exists");
+      
       let comment = req.body.comment;
-      try {
-    
       if (!comment) return res.send("missing required field title");
+      try {
+        let cc = await Book.findOne({ _id: bookid });
+      if (!cc) return res.send("no book exists");
+      
       
         
         cc = cc["comments"].length;
