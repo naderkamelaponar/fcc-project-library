@@ -108,7 +108,7 @@ module.exports = function (app) {
         return res.json(newComment);
       } catch (error) {
         console.log(error);
-        return "error";
+        return res.send("no book exists");
       }
     })
 
