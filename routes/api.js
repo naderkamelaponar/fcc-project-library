@@ -16,7 +16,7 @@ module.exports = function (app) {
       //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
       let books = await Book.find({});
       if (!books) {
-        books = await Book.create({ title: "The Noble Qura'an" });
+        books = await Book.create({ title: "The Noble Quran" });
         books = [
           {
             _id: books["_id"],
