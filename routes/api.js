@@ -15,7 +15,9 @@ module.exports = function (app) {
       //response will be array of book objects
       //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
       let books = await Book.find({});
-      if (!books) {
+
+      if (books.length === 0) {
+        console.log("EEEEEE", books);
         books = await Book.create({ title: "The Noble Quran" });
         books = [
           {
